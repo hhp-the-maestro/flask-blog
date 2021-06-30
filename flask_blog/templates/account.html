@@ -1,0 +1,97 @@
+{% extends 'layout.html' %}
+{% block content %}
+	<div class="content-section">
+		<div class="media">
+			<img class="rounded-circle account-img" src="{{ image_file }}">
+			<div class="media-body">
+				<h2 class="account-heading"><em style="color: goldenrod;">{{ user.username }}</em></h2>
+				<p class="text-secondary">{{ user.email }}</p>
+				<p><em>i'm cool</em></p>
+			</div>
+		</div>
+
+<!-- Account update Form collapse -->
+		{% if user.username == current_user.username %}
+		  	<div class="card">
+		    	<div class="card-header">
+	        		<button class="btn btn-block btn-primary" type="button" data-toggle="collapse" data-target="#updateformcollapse" aria-expanded="true" aria-controls="updateformcollapse">Account Info
+	        		</button>
+		    	</div>
+				
+				<div class="collapse show card-body" id='updateformcollapse'>
+				    <form method="POST" action="" enctype="multipart/form-data">
+				        {{ form.hidden_tag() }}
+				        <fieldset class="form-group">
+				            <div class="form-group">
+				                {{ form.username.label(class="form-control-label") }}
+				                {% if form.username.errors %}
+				                    {{ form.username(class="form-control form-control-lg is-invalid") }}
+				                    <div class="invalid-feedback">
+				                        {% for error in form.username.errors %}
+				                            <span>{{ error }}</span>
+				                        {% endfor %}
+				                    </div>
+				                {% else %}
+				                    {{ form.username(class="form-control form-control-lg") }}
+				                {% endif %}
+				            </div>
+				            <div class="form-group">
+				                {{ form.email.label(class="form-control-label") }}
+				                {% if form.email.errors %}
+				                    {{ form.email(class="form-control form-control-lg is-invalid") }}
+				                    <div class="invalid-feedback">
+				                        {% for error in form.email.errors %}
+				                            <span>{{ error }}</span>
+				                        {% endfor %}
+				                    </div>
+				                {% else %}
+				                    {{ form.email(class="form-control form-control-lg") }}
+				                {% endif %}
+				            </div>
+				            <div class="form-group">
+				            	{{ form.picture.label() }}
+				            	{{ form.picture(class='form_control_file') }}
+				            	{% if form.picture.errors %}
+				            		{% for error in form.picture.errors %}
+				            			<span class="text-danger">{{ error }}</ span><br>
+				            		{% endfor %}
+				            	{% endif %}
+				        </fieldset>
+				        <div class="form-group">
+				            {{ form.submit(class="btn btn-outline-info") }}
+				        </div>
+				    </form>
+				</div>
+			</div>
+		{% endif %}
+
+	</div>
+
+<!-- The user posts -->
+
+	<h2 class="mb-4"><em><pre>Posts : {{ posts.total }}</pre></em></h2>
+	{% for post in posts.items %}
+		<article class="media content-section">
+			<img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/'+ post.author.image_file) }}">
+			<div class="media-body">
+				<div class="article-metadata">
+					<a href="#" class="mr-2">{{post.author.username}}</a>
+					<small class='text-muted'>{{post.date_posted.strftime('%Y-%m-%d')}}</small>
+				</div>			
+				<h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{post.title}}</a></h2>
+				<p class="article-content">{{post.content}}</p>
+			</div>
+		</article>
+	{% endfor %}
+	{% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+		{% if page_num %}
+			{% if posts.page == page_num %}
+				<a class="btn btn-info mb-4" href="{{url_for('users.account', username=user.username, page=page_num)}}">{{ page_num }}</a>
+			{% else %}
+				<a class="btn btn-outline-info mb-4" href="{{url_for('users.account',username=user.username,  page=page_num)}}">{{ page_num }}</a>
+			{% endif %}
+		{% else %}
+			...
+		{% endif %}
+	{% endfor %} 
+{% endblock content %}

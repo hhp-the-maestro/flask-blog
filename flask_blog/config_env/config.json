@@ -1,6 +1,6 @@
 {
 	"SQLALCHEMY_DATABASE_URI": "##############", 
 	"SECRET_KEY": "#####################", 
-	"email": "noreplay@mail.com", 
+	"email": "noreply@mail.com", 
 	"password": "jsj515sjjs"
 }
